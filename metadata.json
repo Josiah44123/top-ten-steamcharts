@@ -1,0 +1,5 @@
+{
+  "name": "Top Ten SteamCharts",
+  "description": "Interactive dashboard showing the top 10 most played games on Steam right now, with historical player charts.",
+  "requestFramePermissions": []
+}
