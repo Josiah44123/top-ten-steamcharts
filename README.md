@@ -20,3 +20,6 @@ It parses the massive JSON response to extract just the short_description and th
 The images don't go through our backend at all. Because we extracted the Steam App ID in Step 1, the React frontend can directly load images from Steam's official content delivery network (CDN) using a predictable URL structure:
 https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/{appId}/capsule_231x87.jpg
 Summary: The app is a "mashup." It scrapes the rankings from SteamCharts HTML, grabs the graphs from SteamCharts' internal JSON, and pulls the lore/metadata from the official Steam Store API, combining them all into one seamless dashboard!
+ 
+
+
