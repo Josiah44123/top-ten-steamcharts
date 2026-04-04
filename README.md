@@ -1,25 +1,48 @@
-Since browsers block direct requests to external websites due to CORS (Cross-Origin Resource Sharing) security rules, I built a Node.js (Express) backend that acts as a middleman. The backend gathers data from three different places and sends it to your React frontend.
-Here is the step-by-step data flow:
+1. Top 10 Games (Web Scraping)
 
-1. The Top 10 List (Web Scraping)
-SteamCharts doesn't have a public API for its homepage list, so we have to extract it manually.
-When the frontend requests /api/top-games, the Node.js backend uses a library called axios to download the raw HTML of steamcharts.com.
-It then uses a library called cheerio (which acts like jQuery for servers) to scan the HTML, find the <table id="top-games">, and loop through the top 10 rows.
-It extracts the text for the game's name, current players, 24-hour peak, and total hours played. It also looks at the URL link attached to the game's name to extract the official Steam App ID (e.g., 730 for CS:GO).S
-2. The 48-Hour Player Charts (Hidden JSON API)
-Once we have the Steam App ID from step 1, we can get the historical data.
-When you click a game to expand it, the frontend requests /api/game/{id}/chart.
-The backend makes a request to a hidden JSON endpoint used internally by SteamCharts: https://steamcharts.com/app/{id}/chart-data.json.
-This returns a massive array of timestamps and player counts, which the backend passes to the frontend to be rendered by the recharts graphing library.
+Since SteamCharts does not provide a public API for its homepage rankings, the data is extracted manually.
+
+The frontend sends a request to /api/top-games.
+The backend uses axios to fetch the raw HTML from steamcharts.com.
+It then uses cheerio (a server-side HTML parser similar to jQuery) to locate the <table id="top-games">.
+The top 10 rows are parsed to extract:
+Game name
+Current players
+24-hour peak
+Total hours played
+The backend also extracts the Steam App ID from each game's link (e.g., 730 for CS:GO).
+2. 48-Hour Player Charts (Hidden JSON API)
+
+Once the Steam App ID is available, historical player data can be retrieved.
+
+When a user expands a game, the frontend requests /api/game/{id}/chart.
+The backend calls SteamCharts’ internal endpoint:
+https://steamcharts.com/app/{id}/chart-data.json
+This returns an array of timestamps and player counts.
+The backend forwards this data to the frontend, where it is visualized using Recharts.
 3. Game Descriptions & Genres (Official Steam API)
-SteamCharts only has player numbers, not game descriptions. To get the lore/descriptions, we go straight to Valve.
-When you expand a game, the frontend also requests /api/game/{id}/details.
-The backend calls the official Steam Store API: https://store.steampowered.com/api/appdetails?appids={id}.
-It parses the massive JSON response to extract just the short_description and the genres array, sending them back to the UI.
+
+SteamCharts does not include game descriptions, so the app uses Valve’s official API.
+
+The frontend requests /api/game/{id}/details.
+The backend calls:
+https://store.steampowered.com/api/appdetails?appids={id}
+From the response, it extracts:
+short_description
+genres
+This information is sent back to the frontend for display.
 4. Game Images (Steam CDN)
-The images don't go through our backend at all. Because we extracted the Steam App ID in Step 1, the React frontend can directly load images from Steam's official content delivery network (CDN) using a predictable URL structure:
+
+Images are loaded directly from Steam’s CDN and do not pass through the backend.
+
+Using the App ID, the frontend constructs the image URL:
 https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/{appId}/capsule_231x87.jpg
-Summary: The app is a "mashup." It scrapes the rankings from SteamCharts HTML, grabs the graphs from SteamCharts' internal JSON, and pulls the lore/metadata from the official Steam Store API, combining them all into one seamless dashboard!
- 
+Summary
 
+This app is essentially a data mashup:
 
+It scrapes rankings from SteamCharts HTML
+Retrieves player trends from SteamCharts’ internal JSON
+Fetches descriptions and genres from the official Steam API
+
+All of this is combined into a single, seamless dashboard for the user.
