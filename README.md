@@ -1,48 +1,45 @@
-1. Top 10 Games (Web Scraping)
+🛠️ How It Works (Technical Architecture)
+This project serves as a comprehensive data mashup, synchronizing three different data sources into a single, unified dashboard. Since SteamCharts lacks a public-facing API for global rankings, the application uses a multi-layered retrieval strategy:
 
-Since SteamCharts does not provide a public API for its homepage rankings, the data is extracted manually.
+1. Global Rankings (Web Scraping)
+Because SteamCharts does not offer an official API for its homepage rankings, the backend performs real-time scraping to get the latest trends:
 
-The frontend sends a request to /api/top-games.
-The backend uses axios to fetch the raw HTML from steamcharts.com.
-It then uses cheerio (a server-side HTML parser similar to jQuery) to locate the <table id="top-games">.
-The top 10 rows are parsed to extract:
-Game name
-Current players
-24-hour peak
-Total hours played
-The backend also extracts the Steam App ID from each game's link (e.g., 730 for CS:GO).
-2. 48-Hour Player Charts (Hidden JSON API)
+The Process: The backend uses axios to fetch the raw HTML from steamcharts.com and cheerio (a server-side jQuery implementation) to parse the #top-games table.
 
-Once the Steam App ID is available, historical player data can be retrieved.
+Data Points: It extracts the Game Name, Current Players, 24-hour Peak, and Total Hours Played.
 
-When a user expands a game, the frontend requests /api/game/{id}/chart.
-The backend calls SteamCharts’ internal endpoint:
-https://steamcharts.com/app/{id}/chart-data.json
-This returns an array of timestamps and player counts.
-The backend forwards this data to the frontend, where it is visualized using Recharts.
-3. Game Descriptions & Genres (Official Steam API)
+The Hook: It also captures the Steam App ID from the URL (e.g., 730 for CS:GO), which acts as the primary key for the following two features.
 
-SteamCharts does not include game descriptions, so the app uses Valve’s official API.
+2. 48-Hour Player Charts (Internal API)
+Once the App ID is identified, the app visualizes historical player density:
 
-The frontend requests /api/game/{id}/details.
-The backend calls:
-https://store.steampowered.com/api/appdetails?appids={id}
-From the response, it extracts:
-short_description
-genres
-This information is sent back to the frontend for display.
-4. Game Images (Steam CDN)
+The Endpoint: When a user expands a game card, the backend queries SteamCharts’ internal JSON endpoint:
 
-Images are loaded directly from Steam’s CDN and do not pass through the backend.
+[https://steamcharts.com/app/](https://steamcharts.com/app/){id}/chart-data.json
 
-Using the App ID, the frontend constructs the image URL:
-https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/{appId}/capsule_231x87.jpg
-Summary
+Visualization: This raw array of timestamps and player counts is processed and sent to the frontend, where it is rendered into a clean, interactive line chart using Recharts.
 
-This app is essentially a data mashup:
+3. Metadata & Context (Official Steam API)
+SteamCharts provides the numbers, but not the "story." To provide context for each game:
 
-It scrapes rankings from SteamCharts HTML
-Retrieves player trends from SteamCharts’ internal JSON
-Fetches descriptions and genres from the official Steam API
+The Source: The backend calls Valve’s official Steam Store API:
 
-All of this is combined into a single, seamless dashboard for the user.
+[https://store.steampowered.com/api/appdetails?appids=](https://store.steampowered.com/api/appdetails?appids=){id}
+
+Enrichment: We extract the short_description and genres to help users understand what the game is without leaving the dashboard.
+
+4. Dynamic Visuals (Steam CDN)
+To keep the backend lightweight, game imagery is handled via Client-Side Rendering:
+
+Direct Loading: The frontend reconstructs image URLs using the App ID and pulls directly from Steam's Akamai-powered Content Delivery Network:
+
+[https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/](https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/){appId}/capsule_231x87.jpg
+
+🚀 Technical Summary
+Backend: Node.js/Express (Data Aggregator)
+
+Scraping: Cheerio + Axios
+
+Frontend: React + Recharts
+
+APIs: Steam Store API + SteamCharts Internal JSON
