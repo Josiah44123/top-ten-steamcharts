@@ -11,6 +11,8 @@ import {
   ResponsiveContainer
 } from 'recharts';
 import { cn } from './lib/utils';
+import DailyGame from './components/DailyGame';
+import Leaderboard from './components/Leaderboard';
 
 interface Game {
   id: string;
@@ -93,7 +95,7 @@ export default function App() {
       <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#FF0055]/10 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-[#00B0FF]/10 blur-[120px] pointer-events-none" />
 
-      <div className="max-w-6xl mx-auto px-4 py-16 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 py-16 relative z-10">
         <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-8">
           <div className="relative">
             <div className="absolute -left-6 top-2 bottom-2 w-1.5 bg-gradient-to-b from-[#FF0055] via-[#FFB800] to-[#00B0FF] rounded-full hidden md:block" />
@@ -165,7 +167,15 @@ export default function App() {
             </div>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            {/* Left Column: Daily Game & Leaderboard */}
+            <div className="lg:col-span-1 space-y-8">
+              <DailyGame allGames={games} />
+              <Leaderboard allGames={games} />
+            </div>
+
+            {/* Right Column: Top 10 Games List */}
+            <div className="lg:col-span-2 space-y-4">
             {loading && games.length === 0 ? (
               <div className="space-y-4">
                 {[...Array(10)].map((_, i) => (
@@ -201,6 +211,7 @@ export default function App() {
                 })}
               </AnimatePresence>
             )}
+            </div>
           </div>
         )}
         
