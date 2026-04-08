@@ -22,6 +22,7 @@ export default function DailyGame({ allGames }: DailyGameProps) {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showResult, setShowResult] = useState(false);
+  const [supabaseAvailable, setSupabaseAvailable] = useState(true);
 
   useEffect(() => {
     fetchDailyGame();
@@ -31,6 +32,13 @@ export default function DailyGame({ allGames }: DailyGameProps) {
     try {
       setError(null);
       setLoading(true);
+
+      // Check if Supabase is configured
+      if (!supabase.supabaseUrl || !supabase.supabaseKey) {
+        setSupabaseAvailable(false);
+        setLoading(false);
+        return;
+      }
 
       // Get today's daily game
       const today = new Date().toISOString().split('T')[0];
@@ -128,14 +136,24 @@ export default function DailyGame({ allGames }: DailyGameProps) {
     return game?.currentPlayers || '?';
   };
 
+  if (!supabaseAvailable) {
+    return (
+      <div className="p-6 rounded-3xl bg-gradient-to-br from-amber-500/5 via-transparent to-amber-500/5 border border-amber-500/20 backdrop-blur-md">
+        <div className="space-y-3">
+          <h3 className="font-bold text-lg text-amber-100">Daily Game</h3>
+          <p className="text-sm text-amber-100/70">Supabase not configured. Add your credentials to .env to enable daily games.</p>
+          <p className="text-xs text-amber-100/50 mt-2">See SUPABASE_SETUP.md for instructions.</p>
+        </div>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
-      <div className="bg-[#13111C] border border-white/5 rounded-3xl p-8 backdrop-blur-xl">
-        <div className="h-64 flex items-center justify-center text-neutral-500">
-          <div className="text-center">
-            <div className="w-12 h-12 rounded-full bg-white/10 animate-pulse mx-auto mb-4" />
-            <p className="text-xs uppercase tracking-[0.2em] font-bold">Loading Daily Game...</p>
-          </div>
+      <div className="p-6 rounded-3xl bg-gradient-to-br from-[#FF0055]/5 via-transparent to-[#00B0FF]/5 border border-white/10 backdrop-blur-md">
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 bg-white/10 rounded-lg w-3/4"></div>
+          <div className="h-32 bg-white/10 rounded-lg"></div>
         </div>
       </div>
     );

@@ -21,6 +21,7 @@ export default function Leaderboard({ allGames }: LeaderboardProps) {
   const [error, setError] = useState<string | null>(null);
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
   const [timeRange, setTimeRange] = useState<TimeRange>('week');
+  const [supabaseAvailable, setSupabaseAvailable] = useState(true);
 
   useEffect(() => {
     fetchHistoricalData();
@@ -30,6 +31,13 @@ export default function Leaderboard({ allGames }: LeaderboardProps) {
     try {
       setError(null);
       setLoading(true);
+
+      // Check if Supabase is configured
+      if (!supabase.supabaseUrl || !supabase.supabaseKey) {
+        setSupabaseAvailable(false);
+        setLoading(false);
+        return;
+      }
 
       const daysBack = timeRange === 'today' ? 1 : timeRange === 'week' ? 7 : 30;
       const cutoffDate = new Date();
@@ -77,6 +85,33 @@ export default function Leaderboard({ allGames }: LeaderboardProps) {
       ...getGameTrend(game.name),
     }))
     .filter(game => game.trend !== null);
+
+  if (!supabaseAvailable) {
+    return (
+      <div className="p-6 rounded-3xl bg-gradient-to-br from-amber-500/5 via-transparent to-amber-500/5 border border-amber-500/20 backdrop-blur-md">
+        <div className="space-y-3">
+          <h3 className="font-bold text-lg text-amber-100">Rankings Comparison</h3>
+          <p className="text-sm text-amber-100/70">Supabase not configured. Add your credentials to .env to see ranking comparisons.</p>
+          <p className="text-xs text-amber-100/50 mt-2">See SUPABASE_SETUP.md for instructions.</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="p-6 rounded-3xl bg-gradient-to-br from-[#FF0055]/5 via-transparent to-[#00B0FF]/5 border border-white/10 backdrop-blur-md">
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 bg-white/10 rounded-lg w-3/4"></div>
+          <div className="space-y-3">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="h-12 bg-white/10 rounded-lg"></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (error) {
     return (
