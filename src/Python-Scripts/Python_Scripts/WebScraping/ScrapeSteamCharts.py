@@ -5,7 +5,7 @@ import numpy as np
 import requests
 from io import StringIO
 
-from Python_Scripts.CSV_Scripts.CSVScript import convert_to_csv, load_csv
+from CSV_Scripts.CSVScript import convert_to_csv, load_csv
 
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
