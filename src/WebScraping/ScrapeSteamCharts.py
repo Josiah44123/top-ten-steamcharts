@@ -1,11 +1,9 @@
 from datetime import datetime
-
-import pandas as pd
-import numpy as np
+import json
 import requests
 from io import StringIO
 
-from CSV_Scripts.CSVScript import convert_to_csv, load_csv
+from DataLoader.CSVScript import *
 
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
@@ -59,6 +57,7 @@ def update_charts():
     print(f"Last updated at {last_updated}")
     print(currentTopDf)
 
+    return currentTopDf.to_json(orient='records')
 
 
 
