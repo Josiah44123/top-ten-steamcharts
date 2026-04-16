@@ -67,7 +67,7 @@ def update_charts():
 
     #print data in console not showing in console but returns value correct value
     print(f"Last updated at {last_updated}")
-
+    print(currentTopDf)
     return currentTopDf.to_json(orient='records')
 
 
