@@ -22,5 +22,12 @@ async def get_top_games():
     """
     data = update_charts()
 
+    #Output is an array of JSON objects example:
+    #[{"Current position":1.0,"Game Name":"Counter-Strike 2","Current Players":994667,"Past position":1.0},
+    # {"Current position":2.0,"Game Name":"Dota 2","Current Players":409186,"Past position":2.0},
+    # ......
+    # {"Current position":10.0,"Game Name":"Tom Clancy's Rainbow Six Siege","Current Players":83306,"Past position":9.0}]
+
+
     return {"status": "success",
             "data" : data}
