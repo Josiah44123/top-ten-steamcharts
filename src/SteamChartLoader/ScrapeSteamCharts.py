@@ -40,9 +40,9 @@ def compare_to_past_top(currentTopDf):
         return
 
     for index, row in pastTopDf.iterrows():
-        GameName = row['Game Name']
+        gameName = row['Game Name']
         pastPosition = row['Current position']
-        currentTopDf.loc[currentTopDf['Game Name'] == GameName, 'Past position'] = pastPosition
+        currentTopDf.loc[currentTopDf['Game Name'] == gameName, 'Past position'] = pastPosition
 
 
 def update_charts():
