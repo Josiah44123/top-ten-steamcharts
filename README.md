@@ -2,7 +2,7 @@
 
 This project is a comprehensive data mashup that synchronizes three distinct data sources into a single, unified dashboard. Since SteamCharts lacks a public API for global rankings, the application uses a multi-layered retrieval strategy:
 
-1. Global Rankings (Web Scraping)
+1. Global Rankings using Web Scraping
 Challenge: SteamCharts doesn’t provide an official API for homepage rankings.
 Process: Backend fetches raw HTML using Axios and parses the #top-games table with Cheerio (server-side jQuery).
 Data Points: Extracts Game Name, Current Players, 24-hour Peak, and Total Hours Played.
