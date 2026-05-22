@@ -9,7 +9,6 @@ Data Points: Extracts Game Name, Current Players, 24-hour Peak, and Total Hours 
 Primary Key: Captures the Steam App ID from the URL (e.g., 730 for CS:GO), which is used for subsequent features.
 2. 48-Hour Player Charts (Internal API)
 Endpoint: When a user expands a game card, the backend queries SteamCharts’ internal JSON endpoint:
-https://steamcharts.com/app/{id}/chart-data.json
 Visualization: Timestamps and player counts are processed and sent to the frontend, rendered as interactive line charts with Recharts.
 3. Metadata & Context (Official Steam API)
 Source: Calls Valve’s official Steam Store API:
