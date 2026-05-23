@@ -16,7 +16,8 @@ https://store.steampowered.com/api/appdetails?appids={id}
 Enrichment: Extracts short_description and genres to provide users with game context directly in the dashboard.
 4. Dynamic Visuals (Steam CDN)
 Approach: Game images are loaded client-side to keep the backend lightweight.
-URL Pattern: Frontend reconstructs image URLs using the App ID:
+URL Pattern: Frontend reconstructs image URLs using the App ID
+link:
 https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/{appId}/capsule_231x87.jpg
 🚀 Technical Summary
 Backend: Node.js / Express (Data Aggregator)
