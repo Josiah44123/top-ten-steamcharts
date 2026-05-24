@@ -13,6 +13,7 @@ Visualization: Timestamps and player counts are processed and sent to the fronte
 3. Metadata & Context (Official Steam API)
 Source: Calls Valve’s official Steam Store API:
 https://store.steampowered.com/api/appdetails?appids={id}
+
 Enrichment: Extracts short_description and genres to provide users with game context directly in the dashboard.
 4. Dynamic Visuals (Steam CDN)
 Approach: Game images are loaded client-side to keep the backend lightweight.
